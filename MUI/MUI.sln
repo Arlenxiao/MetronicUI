@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MUI.WebSite", "MUI.WebSite\MUI.WebSite.csproj", "{5AAD21DB-76BF-4964-9FF7-FB6CBE77CA6F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5AAD21DB-76BF-4964-9FF7-FB6CBE77CA6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AAD21DB-76BF-4964-9FF7-FB6CBE77CA6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AAD21DB-76BF-4964-9FF7-FB6CBE77CA6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AAD21DB-76BF-4964-9FF7-FB6CBE77CA6F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AD51A660-D77D-49D3-B7BB-28A9F744BFF1}
+	EndGlobalSection
+EndGlobal
