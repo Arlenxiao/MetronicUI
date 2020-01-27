@@ -1,0 +1,97 @@
+﻿@using NewLife;
+@using NewLife.Web;
+@using XCode;
+@using XCode.Configuration;
+@{
+    var fact = ViewBag.Factory as IEntityOperate;
+    var page = ViewBag.Page as Pager;
+    var fields = ViewBag.Fields as IList<FieldItem>;
+    var fk = fact.Unique;
+    var enableSelect = this.EnableSelect();
+
+    var hasUser = fields.Any(f => f.Name.EqualIgnoreCase("CreateUserID", "UpdateUserID"));
+    if (hasUser && ViewData["Provider"] == null) { ViewData["Provider"] = ManageProvider.Provider; }
+}
+<div style=" overflow-x: auto;">
+    <table class="table table-sm table-hover">
+        <thead>
+            <tr class="kt-datatable__row">
+                @if (enableSelect)
+                {
+                    <th class="kt-datatable__cell--center kt-datatable__cell kt-datatable__cell--check" style="width:20px;">
+                        <label class="kt-checkbox kt-checkbox--single kt-checkbox--all kt-checkbox--solid">
+                            <input type="checkbox" id="chkAll" title="全选" />
+                            <span></span>
+                        </label>
+                    </th>
+                }
+                @foreach (var item in fields)
+                {
+                    var sortUrl = item.OriField != null ? page.GetSortUrl(item.OriField.Name) : page.GetSortUrl(item.Name);
+                    var cls = item.IsIdentity ? "text-center hidden-md hidden-sm hidden-xs" : "text-center";
+                    <th class="@cls" title="@item.Description"><a href="@Html.Raw(sortUrl)">@item.DisplayName</a></th>
+                }
+                @if (this.Has(PermissionFlags.Update, PermissionFlags.Delete))
+                {
+                    <th class="text-center">升</th>
+                    <th class="text-center">降</th>
+                    <th class="text-center">操作</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (IEntityTree entity in Model)
+            {
+                var FirstFlag = 0;
+                var p = entity.Parent as IEntityTree;
+                if (p == null)
+                {
+                    p = fact.EntityType.GetValue("Root") as IEntityTree;
+                }
+                var id = entity["ID"];
+                <tr>
+                    @if (enableSelect)
+                    {
+                        <td class="text-center" style="width:20px;">
+                            <label class="kt-checkbox kt-checkbox--single kt-checkbox--all kt-checkbox--solid">
+                                <input type="checkbox" name="keys" value="@entity[fk.Name]" />
+                                <span></span>
+                            </label>
+                        </td>
+                    }
+                    @foreach (var item in fields)
+                    {
+                        if (FirstFlag == 0)
+                        {
+                            @Html.Partial("_List_Data_Item_First", new Pair(entity, item))
+                        }
+                        else
+                        {
+                            @Html.Partial("_List_Data_Item", new Pair(entity, item))
+                        }
+
+                        FirstFlag++;
+                    }
+                    @if (this.Has(PermissionFlags.Update, PermissionFlags.Delete))
+                    {
+                        <td class="text-center" style="width:50px;">
+                            @if (p != null && p.Childs != null && p.Childs.Count > 0 && entity != p.Childs[0])
+                            {
+                                <a href="@Url.Action("Up", new { id })"><span class="la la-angle-up" style="color: green;"></span></a>
+                            }
+                        </td>
+                        <td class="text-center" style="width:50px;">
+                            @if (p != null && entity != p.Childs[p.Childs.Count - 1])
+                            {
+                                <a href="@Url.Action("Down", new { id })"><span class="la la-angle-down" style="color: red;"></span></a>
+                            }
+                        </td>
+                        <td class="text-right" style="width:90px;">
+                            @Html.Partial("_List_Data_Action", (Object)entity)
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

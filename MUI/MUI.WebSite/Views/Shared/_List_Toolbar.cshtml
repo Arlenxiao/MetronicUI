@@ -1,0 +1,95 @@
+﻿@using NewLife;
+@using NewLife.Cube
+@using NewLife.Web;
+@using XCode;
+@using XCode.Membership
+@{
+    var fact = ViewBag.Factory as IEntityOperate;
+    var page = ViewBag.Page as Pager;
+    var cls_collapsed = (page["kt-portlet--collapsed"] + "").Equals("1") ? "" : "kt-portlet--collapsed";
+
+    var act = ViewBag.Action as String;
+    if (act.IsNullOrEmpty()) { act = Url.Action("Index"); }
+
+    var enableSelect = this.EnableSelect();
+    var btn_add = "添加" + ViewContext.Controller.GetType().GetDisplayName();
+}
+<!--查询菜单栏-->
+<form class="kt-portlet mb-0 " action="@Html.Raw(page.GetFormAction(act))" method="post" role="form">
+    <div class="kt-portlet mb-0 @cls_collapsed" data-ktportlet="true" id="kt_portlet_tools_1">
+        <input type="hidden" id="kt-portlet--collapsed" name="kt-portlet--collapsed" value="@page["kt-portlet--collapsed"]" />
+        <div class="kt-portlet__head p-0 border-bottom-0">
+            <!--左边工具栏-->
+            <div class="kt-portlet__head-label">
+                <div class="kt-portlet__head-group pl-2">
+                    @if (this.Has(PermissionFlags.Insert))
+                    {
+                        <a href="@Url.Action("Add")" class="btn btn-success btn-sm"><i class="la la-plus"></i>@btn_add</a>
+                    }
+                    @if (enableSelect)
+                    {
+                        @Html.Partial("_List_Toolbar_Batch")
+                    }
+                </div>
+            </div>
+            <!--右边查询栏-->
+            <div class="kt-portlet__head-toolbar">
+                <div class="kt-portlet__head-group">
+                    <label class="btn btn-sm p-0 pull-right">
+                        <a href="#" data-ktportlet-tool="toggle" class="btn btn-outline-brand btn-sm ">高级 <i class="la la-angle-down"></i></a>
+                    </label>
+                    @Html.Partial("_List_Toolbar_Search")
+                    @Html.Partial("_List_Toolbar_Search_Udf")
+
+                </div>
+            </div>
+        </div>
+        <!--更多筛选-->
+        <div class="kt-portlet__body p-0 pb-3">
+            <div class="kt-portlet__content">
+                @Html.Partial("_List_Toolbar_Adv")
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@if (enableSelect)
+{
+    <script>
+        $(function () {
+            var $toolbarContext = $('.toolbar-batch'),
+                $batchButtons = $('button[data-action="action"], input[data-action="action"]'), //button, input=button, a 3种类型都可以
+                $table = $('.table'),
+                $keys = $('input[name="keys"]', $table);
+
+            $table.on('click', '#chkAll', function () {
+                // 全选
+                $keys.prop('checked', this.checked);
+                // 启用禁用批量操作区
+                $batchButtons.prop('disabled', !this.checked);
+            });
+
+            $table.on('click.checked', 'tbody input[name="keys"]', function (e) {
+                //页面中所有的checkbox
+                var allbox = $table.find('tbody :checkbox[name="keys"]');
+                //页面中所选中的checkbox
+                var selecteds = $table.find('tbody :checkbox:checked[name="keys"]');
+                if (selecteds.length > 0) {
+                    // 启用禁用批量操作区
+                    $batchButtons.prop('disabled', false);
+                    //需要判断当前页面所有行的checkbox是否都选中，以此来决定是否需要改变checkbox#chkAll 的状态
+                    if (allbox.length == selecteds.length) {
+                        $table.find('#chkAll').prop('checked', true);
+                    } else {
+                        $table.find('#chkAll').prop('checked', false);
+                    }
+                }
+                else {
+                    $batchButtons.prop('disabled', true);
+                    $table.find('#chkAll').prop('checked', false);
+                }
+            });
+        })
+    </script>
+}

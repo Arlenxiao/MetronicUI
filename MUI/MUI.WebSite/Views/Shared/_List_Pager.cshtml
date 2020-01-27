@@ -1,0 +1,64 @@
+﻿@using NewLife.Web;
+@{
+    var page = ViewBag.Page as Pager;
+    //page.PageUrlTemplate = page.PageUrlTemplate.Replace("{链接}", Url.Action("Index") + "{链接}");
+    // 没有总记录数的时候不显示分页，可以认为不启用分页
+
+    var act = ViewBag.Action as String;
+    if (act.IsNullOrEmpty()) { act = Url.Action("Index"); }
+}
+
+    
+
+@if (page.TotalCount > 0)
+{
+    <form action="@act?@page.GetBaseUrl(true, true, false)" method="post" role="form" class="flex justify-content-between">
+        <div class="kt-portlet__foot flex flex-grow-1 justify-content-between flex-wrap p-0 pt-4">
+            <div class="kt-section">
+                <div class="kt-pagination kt-pagination--brand " style="justify-content:flex-end">
+
+                    <div class="btn-group btn-group-sm pl-3 pr-3" role="group" aria-label="Small button group">
+                        @Html.Raw(page.GetPage("首页"))&nbsp;&nbsp;
+                        @Html.Raw(page.GetPage("上一页"))&nbsp;&nbsp;
+                        @Html.Raw(page.GetPage("下一页"))&nbsp;&nbsp;
+                        @Html.Raw(page.GetPage("尾页")) &nbsp;&nbsp;
+                    </div>
+
+                    <div class="kt-pagination__toolbar">
+                        <span class="pagination__desc">
+                            <div class="flex align-items-center flex-shrink-0">
+                                共<span>&nbsp;@page.TotalCount.ToString("n0")&nbsp;</span> &nbsp;条
+                                共<span>&nbsp;@page.PageCount.ToString("n0")&nbsp;</span>页&nbsp;
+                            </div>
+                        </span>
+                        第<input name="PageIndex" type="text" value="@page.PageIndex" class="form-control form-control-sm" style="width: 40px; height:25px; padding-left: 5px; margin: 0 5px;" />页
+                        <input type="submit" value="GO" class="btn btn-sm btn-secondary  kt-margin-l-5 kt-margin-r-5" style=" padding: 0; width: 30px; height:25px; line-height: 25px;margin-top: -1px;" />
+                        页大小
+                        <select id="PageSize" name="PageSize" onchange="$(this).parents('form').submit();" class="custom-select custom-select-sm form-control form-control-sm" style="width:40px; height:25px; padding-top: 0;padding-bottom: 0;">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                        </select>
+                        <script type="text/javascript">
+                    $(function() {
+                        $('#PageSize').val(@page.PageSize);
+                    });
+                        </script>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+    </form>
+}

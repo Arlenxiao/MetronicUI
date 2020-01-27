@@ -1,0 +1,20 @@
+﻿
+@{
+    var Obj = Model as Object;
+}
+<!-- 新的设置菜单-->
+<div class="text-center col-md-12 cube-flex-con cube-flex-items">
+    <ul class="kt-nav col-12">
+        @foreach (var link in MUI.WebSite.ConfigSettingService.Current.Links)
+        {
+            <li class="kt-nav__item" style="text-align:left;">
+                <a href="@Url.Content(link.Value)" class="kt-nav__link">
+                    <span class="kt-nav__link-bullet kt-nav__link-bullet--line">
+                        <span></span>
+                    </span>
+                    <span class="kt-nav__link-text">@link.Key</span>
+                </a>
+            </li>
+        }
+    </ul>
+</div>

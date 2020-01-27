@@ -1,0 +1,125 @@
+﻿@using NewLife.Cube;
+@using XCode.Configuration;
+@{
+    /**/
+
+    var entity = Model as IEntity;
+    var fact = EntityFactory.CreateOperate(entity.GetType());
+    var fields = ViewBag.Fields as IList<FieldItem>;
+
+    var set = NewLife.Cube.Setting.Current;
+    var cls = set.FormGroupClass;
+    if (cls.IsNullOrEmpty()) { cls = "form-group col-12 col-sm-6 col-lg-4"; }
+
+    var total = 12;
+    var label = 3;
+    var span = 4;
+    var input = total - label - span;
+
+    var cid = fact.Table.FindByName("CreateUserID") as FieldItem;
+    var uid = fact.Table.FindByName("UpdateUserID") as FieldItem;
+    var cip = fact.Table.FindByName("CreateIP") as FieldItem;
+    var uip = fact.Table.FindByName("UpdateIP") as FieldItem;
+    var remark = fact.Table.FindByName("Remark") as FieldItem;
+    if (remark == null) { remark = fact.Table.FindByName("Description"); }
+
+    var hasUser = cid != null || uid != null;
+    if (hasUser && ViewData["Provider"] == null) { ViewData["Provider"] = ManageProvider.Provider; }
+    var provider = ViewData["Provider"] as IManageProvider;
+
+    var set1 = NewLife.Cube.Setting.Current;
+    var cls1 = set.FormGroupClass;
+    var s = Convert.ToInt32(cls1.Split('-').Last());
+    var r = (Decimal)s * Math.Floor((Decimal)12 / (Decimal)s) * (Decimal)100 / 12;
+    var l = (Decimal)s * (Decimal)20 / 12;
+}
+
+@if (cid != null && !fields.Contains(cid))
+{
+    var user = fact.Table.FindByName("CreateUserID") as FieldItem;
+    var time = fact.Table.FindByName("CreateTime") as FieldItem;
+    <div class="form-group flex align-items-center" style="width:@r%; height: 3rem;">
+        <div class="item-label" style="width:@l%;">
+            <label class="control-label kt-margin-r-5">创建</label>
+            <div class="kt-margin-l-5 kt-margin-r-5 toggle-show" style="width:18px;"></div>
+        </div>
+        <div class="flex align-items-center flex-grow-1">
+            @if (user != null)
+            {
+                var val = entity[user.Name];
+                <span class="text-primary" title="@val">@provider.FindByID(val)</span>
+            }
+            @if (time != null)
+            {
+                var dt = (DateTime)entity[time.Name];
+                <span class="text-success">@dt.ToFullString()</span>
+            }
+            @if (cip != null)
+            {
+                var ip = entity[cip.Name] + "";
+                <span class="text-primary">@ip @ip.IPToAddress()</span>
+            }
+        </div>
+    </div>
+}
+@if (uid != null && !fields.Contains(uid))
+{
+    var user = fact.Table.FindByName("UpdateUserID") as FieldItem;
+    var time = fact.Table.FindByName("UpdateTime") as FieldItem;
+    <div class="form-group flex align-items-center" style="width:@r%; height: 3rem;">
+        <div class="item-label" style="width:@l%;">
+            <label class="control-label kt-margin-r-5">更新</label>
+            <div class="kt-margin-l-5 kt-margin-r-5 toggle-show" style="width:18px;"></div>
+        </div>
+        <div class="flex align-items-center flex-grow-1">
+            @if (user != null)
+            {
+                var val = entity[user.Name];
+                <span class="text-primary" title="@val">@provider.FindByID(val)</span>
+            }
+            @if (time != null)
+            {
+                var dt = (DateTime)entity[time.Name];
+                <span class="text-success">@dt.ToFullString()</span>
+            }
+            @if (uip != null)
+            {
+                var ip = entity[uip.Name] + "";
+                <span class="text-primary">@ip @ip.IPToAddress()</span>
+            }
+        </div>
+    </div>
+}
+@if (remark != null && !fields.Contains(remark))
+{
+    <div class="form-group flex kt-margin-0" style="width:@r%;">
+        <div class="item-label" style="width:@l%; height: 3rem;">
+            <label class="control-label kt-margin-r-5">@remark.DisplayName</label>
+            <div class="kt-margin-l-5 kt-margin-r-5 toggle-show" style="width:18px;"></div>
+        </div>
+        <div class="flex align-items-center flex-grow-1">
+            @Html.ForStringX(remark.Name, (String)entity[remark.Name], -1)
+            @Html.ForDescriptionX(remark)
+        </div>
+    </div>
+}
+
+
+@*<script>
+    $(document).ready(function () {
+        //alert($(window).height()); //浏览器当前窗口可视区域高度
+        //alert($(document).height()); //浏览器当前窗口文档的高度
+        //alert($(document.body).height());//浏览器当前窗口文档body的高度
+        //alert($(document.body).outerHeight(true));//浏览器当前窗口文档body的总高度 包括border padding margin
+        //alert($(window).width()); //浏览器当前窗口可视区域宽度
+        //alert($(document).width());//浏览器当前窗口文档对象宽度
+        //alert($(document.body).width());//浏览器当前窗口文档body的高度
+        //alert($(document.body).outerWidth(true));//浏览器当前窗口文档body的总宽度 包括border padding margin
+        console.log($(document).width());
+        if ($(document).width() < 576) {
+            console.log(576);
+        } else if ($(document).width() < 1024 && $(document).width() >= 576) {
+            console.log(1024);
+        }
+    })
+</script>*@

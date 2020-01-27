@@ -1,0 +1,22 @@
+﻿
+<div class="kt-login__forgot">
+    <div class="kt-login__head">
+        <h3 class="kt-login__title">忘记密码 ?</h3>
+        <div class="kt-login__desc">请输入电子邮箱以重置您的密码</div>
+    </div>
+    <div class="kt-login__form kt-form">
+        @using (Html.BeginForm("ForgetPassword", "User", new { r = ViewBag.ReturnUrl }, FormMethod.Post))
+        {
+            <div class="form-group kt-form__group">
+                <input class="form-control" type="text" placeholder="邮箱" name="email" id="m_email" autocomplete="off">
+            </div>
+            <div class="kt-login__actions">
+                <button id="kt_login_forgot_submit" class="btn btn-brand btn-pill btn-elevate">确认</button>
+                <button id="kt_login_forgot_cancel" class="btn btn-outline-brand btn-pill">返回</button>
+            </div>
+        }
+    </div>
+</div>
+
+
+

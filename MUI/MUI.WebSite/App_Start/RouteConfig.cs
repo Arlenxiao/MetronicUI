@@ -13,10 +13,11 @@ namespace MUI.WebSite
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            //默认打开魔方后台
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "CubeHome", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

@@ -1,0 +1,71 @@
+﻿@using NewLife;
+@using NewLife.Web;
+@using XCode;
+@using XCode.Configuration;
+@{
+    var entity = Model as IEntity;
+
+    var page = ViewBag.Page as Pager;
+    var fields = ViewBag.Fields as IList<FieldItem>;
+    var enableSelect = this.EnableSelect();
+}
+<tr>
+    @if (enableSelect)
+    {
+        <td></td>
+    }
+    @foreach (var item in fields)
+    {
+        if (item.IsIdentity)
+        {
+            <td class="text-center">总计</td>
+        }
+        else
+        {
+            var value = entity[item.Name];
+            switch (Type.GetTypeCode(item.Type))
+            {
+                case TypeCode.Boolean:
+                case TypeCode.DateTime:
+                    <td></td>
+                    break;
+                case TypeCode.Decimal:
+                    <td class="text-right">@value</td>
+                    break;
+                case TypeCode.Single:
+                case TypeCode.Double:
+                    <td class="text-right">@value</td>
+                    break;
+                case TypeCode.Byte:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                    //特殊处理枚举
+                    if (item.Type.IsEnum)
+                    {
+                        <td class="text-left"></td>
+                    }
+                    else if (item.Name.EqualIgnoreCase("CreateUserID", "UpdateUserID"))
+                    {
+                        <td class="text-left"></td>
+                    }
+                    else
+                    {
+                        <td class="text-left">@Convert.ToInt64(value).ToString("n0")</td>
+                    }
+                    break;
+                case TypeCode.String:
+                default:
+                    <td class="text-left"></td>
+                    break;
+            }
+        }
+    }
+    @if (this.Has(PermissionFlags.Detail, PermissionFlags.Update, PermissionFlags.Delete))
+    {
+        <td></td>
+    }
+</tr>

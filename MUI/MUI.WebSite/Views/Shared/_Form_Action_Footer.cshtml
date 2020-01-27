@@ -1,0 +1,24 @@
+﻿@{
+     var entity = Model as IEntity;
+    var isNew = entity.IsNullKey;
+    var set = NewLife.Cube.Setting.Current;
+    var cls_fix = set.FormGroupClass;
+    if (cls_fix.IsNullOrEmpty()) { cls_fix = "form-group col-12 col-sm-6 col-lg-6"; }
+
+    var cls = cls_fix + " flex align-items-start kt-padding-0";
+    var cls_lab = "col-lg-2 col-form-label text-right";
+    var cls_content = "col-lg-10";
+}
+<div class="kt-portlet__foot">
+    <div class="kt-form__actions">
+        <div class="@cls">
+            <div class="@cls_lab"></div>
+            <div class="@cls_content">
+                <button type="submit" class="btn btn-brand">
+                    <i class="la la-@(isNew ? "plus" : "save")" style="margin-top: -1px;"></i>
+                    <span class="kt-hidden-mobile">@(isNew ? "保 存" : "保 存")</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

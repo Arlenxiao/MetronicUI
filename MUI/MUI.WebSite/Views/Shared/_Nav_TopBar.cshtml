@@ -1,0 +1,28 @@
+﻿@using NewLife.Common;
+@using XCode.Membership;
+@{
+  
+}
+
+<!-- 顶部菜单栏-->
+    <div class="kt-header__topbar">
+        <!--购物车 -->
+        <div class="kt-header__topbar-item dropdown" id="div_nav_mycart">
+            @Html.Partial("_Nav_MyCart")
+        </div>
+        <!--通知栏-->
+        <div class="kt-header__topbar-item dropdown">
+            @Html.Partial("_Nav_TopMenu_Notice")
+        </div>
+
+        <!--快捷操作-->
+        <div class="kt-header__topbar-item dropdown">
+            @Html.Partial("_Nav_TopMenu_Quick")
+        </div>
+
+        <!--用户 -->
+        <div class="kt-header__topbar-item kt-header__topbar-item--user">
+            @Html.Partial("_Nav_TopMenu_User")
+        </div>
+
+    </div>

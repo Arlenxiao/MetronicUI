@@ -1,0 +1,39 @@
+﻿@using XCode
+@using NewLife.Cube
+@{
+    Layout = NewLife.Cube.Setting.Current.Layout;
+    var entity = Model as IEntity;
+    var isNew = entity.IsNullKey;
+    var rv = entity.GetRouteKey();
+}
+
+<div id="main_portlet">
+    @using (Html.BeginForm((isNew ? "Add" : "Edit"), null, rv))
+    {
+        <div class="form-horizontal kt-portlet kt-portlet--last kt-portlet--responsive-mobile">
+            @Html.Partial("_Form_Action", entity)
+
+            @Html.Partial("_Form_TaskView", entity)
+
+            @Html.Partial("_Form_Header", entity)
+            @Html.AntiForgeryToken()
+            @*@Html.ValidationSummary()*@
+            @*解决主键为(0长度字符串"")的异常信息无法显示问题*@
+
+            @foreach (var item in ViewData.ModelState.Values)
+            {
+                foreach (var error in item.Errors)
+                {
+                    <ul>
+                        <li>@error.Exception</li>
+                    </ul>
+                }
+            }
+            @Html.Partial("_Form_Body", entity)
+
+            @Html.Partial("_Form_Action_Footer", entity)
+        </div>
+    }
+</div>
+
+

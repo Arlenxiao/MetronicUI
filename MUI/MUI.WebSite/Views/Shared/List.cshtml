@@ -1,0 +1,59 @@
+﻿@using NewLife.Web;
+@using XCode;
+@using XCode.Membership
+@{
+    Layout = NewLife.Cube.Setting.Current.Layout;
+
+    var fact = ViewBag.Factory as IEntityOperate;
+    var page = ViewBag.Page as Pager;
+
+
+}
+    <div class="kt-portlet kt-portlet--mobile" id="kt_portlet">
+
+        <div class="kt-portlet__head p-0  border-bottom-0">
+            @Html.Partial("_List_Toolbar")
+        </div>
+        <div class="kt-portlet__body p-0" data-scroll="true" style="overflow:auto;">
+            @Html.Partial("_List_Data")
+        </div>
+        @Html.Partial("_List_Pager")
+        <!--统计显示-->
+        <div class="kt-portlet m-0">
+            @Html.Partial("_List_Stats")
+        </div>
+    </div>
+
+@section scripts{
+    <script>
+        $(function () {
+            tablehide();
+
+            //高级功能
+            var portlet = new KTPortlet('kt_portlet_tools_1');
+            portlet.on('beforeExpand', function (portlet) {
+                $("#kt-portlet--collapsed").val("1");
+
+            });
+            portlet.on('beforeCollapse', function (portlet) {
+                $("#kt-portlet--collapsed").val("0");
+            });
+        });
+        window.onresize = function () {
+            tablehide();
+        };
+        function tablehide() {
+            var ww = $(window).width();
+            if (ww <= 1399) {
+                $(".hide_1").hide();
+            }
+            else { $(".hide_1").show(); }
+            if (ww <= 1140) {
+                $(".hide_2").hide();
+            } else {
+                $(".hide_2").show();
+            }
+        }
+
+    </script>
+}

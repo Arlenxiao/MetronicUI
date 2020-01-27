@@ -1,0 +1,189 @@
+﻿@model XCode.Membership.IUser
+@using System.Linq
+@using System.Reflection
+@using XCode
+@using XCode.Configuration
+@using NewLife.Cube.Entity;
+@{
+    Layout = NewLife.Cube.Setting.Current.Layout;
+    var fact = EntityFactory.CreateOperate(ViewData.ModelMetadata.ModelType);
+    var user = Model as IUser;
+
+    var ms = NewLife.Web.OAuthConfig.Current.Items.Where(e => !e.AppID.IsNullOrEmpty()).ToList();
+    var binds = ViewBag.Binds as IList<UserConnect>;
+
+}
+<!--帐号信息-->
+<div class="kt-portlet">
+    <div class="kt-portlet__body">
+        <div class="kt-widget kt-widget--user-profile-3">
+            <div class="kt-widget__top">
+                <div class="kt-widget__pic kt-widget__pic--success kt-font-danger kt-font-bolder kt-font-light">
+                    @user.Name.Substring(0, 1).ToUpper()
+                </div>
+                <div class="kt-widget__content">
+                    <div class="kt-widget__head">
+                        <div class="kt-widget__user">
+                            <a href="#" class="kt-widget__username">
+                                @user.Name
+                            </a>
+                            <span class="kt-badge kt-badge--bolder kt-badge kt-badge--inline kt-badge--unified-success">@(user.Roles.Join(",", r => r + ""))</span>
+                        </div>
+                        <div class="kt-widget__action">
+
+
+                        </div>
+                    </div>
+                    <div class="kt-widget__subhead">
+                        <a href="#"><i class="flaticon2-calendar-3"></i>@user.Logins </a>
+                        <a href="#"><i class="flaticon2-placeholder"></i>@user.LastLogin</a>
+                        <a href="#"><i class="flaticon2-placeholder"></i>@user.LastLoginIP</a>
+                    </div>
+                    <div class="kt-widget__subhead">
+                        <a href="#"><i class="flaticon2-new-email"></i>@user.Mail</a>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--帐号修改内容-->
+<div class="kt-portlet kt-portlet--tabs">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-toolbar">
+            <ul class="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-3x nav-tabs-line-brand" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#kt_apps_contacts_view_tab_1" role="tab">
+                        <i class="flaticon2-note"></i> 基本信息
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#kt_apps_contacts_view_tab_2" role="tab">
+                        <i class="flaticon2-calendar-3"></i> 扩展信息
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="kt-portlet__body">
+        @if (ViewBag.StatusMessage != null)
+        {
+            <div class="alert alert-success alert-dismissible text-center" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>@ViewBag.StatusMessage</strong>
+            </div>
+        }
+        @using (Html.BeginForm("Info", null, new { id = Model[fact.Unique.Name] }))
+        {
+            <div class="tab-content  kt-margin-t-20">
+                <div class="tab-pane active" id="kt_apps_contacts_view_tab_1" role="tabpanel">
+
+                    <div class="kt-form__body">
+                        <div class="kt-section kt-section--first">
+                            <div class="kt-section__body">
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 text-right">名称</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        <input class="form-control" type="text" value="@user.Name" disabled="disabled">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 text-right">密码</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        <input class="form-control" type="password" id="Password" name="Password" value="@user.Password">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 text-right">显示名</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        <input class="form-control" type="text" id="DisplayName" name="DisplayName" value="@user.DisplayName">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-xl-3 col-lg-3 text-right">性别</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        <select class="form-control" id="Sex" name="Sex">
+                                            <option value="0" @(user.Sex == SexKinds.未知 ? "selected" : "")>未知</option>
+                                            <option value="1" @(user.Sex == SexKinds.男 ? "selected" : "")>男</option>
+                                            <option value="2" @(user.Sex == SexKinds.女 ? "selected" : "")>女</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="tab-pane " id="kt_apps_contacts_view_tab_2" role="tabpanel">
+                    <div class="kt-form__body">
+                        <div class="kt-section kt-section--first">
+                            <div class="kt-section__body">
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 text-right">邮件</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        <input class="form-control" type="text" id="Mail" name="Mail" value="@user.Mail">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 text-right">手机</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        <input class="form-control" type="text" id="Mobile" name="Mobile" value="@user.Mobile">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-xl-3 col-lg-3 text-right">代码</label>
+                                    <div class="col-lg-9 col-xl-6">
+                                        <input class="form-control" type="text" id="Code" name="Code" value="@user.Code">
+                                        <span class="form-text text-muted">身份证、员工编号等</span>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-xl-3 col-lg-3 text-right">第三方绑定</label>
+                                    <div class="col-lg-9 col-xl-6">
+
+                                        @foreach (var mi in ms)
+                                        {
+                                            var uc = binds.FirstOrDefault(e => e.Enable && e.Provider.EqualIgnoreCase(mi.Name));
+                                            if (uc != null)
+                                            {
+                                                <input class="form-control" type="text" value="@mi.Name（已绑定）" disabled="disabled">
+                                                <br />
+                                                <a href="~/Sso/UnBind/@mi.Name" title="取消绑定 @mi.Name" class="btn btn-outline-brand btn-sm"><i class="fa fa-user-minus"></i>取消绑定</a>
+                                            }
+                                            else
+                                            {
+                                                <input class="form-control" type="text" value="@mi.Name（未绑定）" disabled="disabled">
+                                                <br />
+                                                <a href="~/Sso/Bind/@mi.Name" title="绑定 @mi.Name" class="btn btn-outline-brand btn-sm"><i class="fa fa-user-plus"></i>去绑定</a>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="kt-separator kt-separator--space-lg kt-separator--fit kt-separator--border-solid"></div>
+            <div class="kt-form__actions">
+                <div class="row">
+                    <div class="col-xl-3"></div>
+                    <div class="col-lg-9 col-xl-6">
+                        <button type="submit" class="btn btn-primary"><i class="la la-save"></i><strong>保存</strong></button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!--End:: Portlet-->
+</div>
+
+

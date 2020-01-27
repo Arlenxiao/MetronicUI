@@ -1,0 +1,40 @@
+﻿@using XCode
+@using XCode.Membership
+@{
+    var menu = ViewBag.Menu as IMenu;
+    var home = NewLife.Cube.Setting.Current.StartPage;
+    var title = ViewBag.Title + "";
+}
+<!--导航-->
+<button class="kt-header-menu-wrapper-close" id="kt_header_menu_mobile_close_btn"><i class="la la-close"></i></button>
+<div class="kt-header-menu-wrapper" id="kt_header_menu_wrapper">
+    <div id="kt_header_menu" class="kt-header-menu kt-header-menu-mobile  kt-header-menu--layout-default ">
+
+        <ul class="kt-menu__nav">
+            <li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel kt-menu__item--active">
+                <a href="@Url.Content(home)"><span class="kt-menu__link-text"><i class="fa fa-home"></i></span></a>
+            </li>
+            @if (menu != null)
+            {
+                foreach (IMenu item in (menu as IEntityTree).AllParents)
+                {
+                    if (item.ID != 0)
+                    {
+                        <li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel kt-menu__item--active">
+                            <span class="kt-menu__link-text">/</span>
+                        </li>
+                        <li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel kt-menu__item--active">
+                            <a href="#"><span class="kt-menu__link-text">@item.DisplayName</span></a>
+                        </li>
+                    }
+                }
+            }
+            <li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel kt-menu__item--active">
+                <span class="kt-menu__link-text">/</span>
+            </li>
+            <li class="kt-menu__item  kt-menu__item--submenu kt-menu__item--rel kt-menu__item--active">
+                <a href="#"><span class="kt-menu__link-text">@(menu != null ? menu.DisplayName : ViewBag.Title)</span></a>
+            </li>
+        </ul>
+    </div>
+</div>

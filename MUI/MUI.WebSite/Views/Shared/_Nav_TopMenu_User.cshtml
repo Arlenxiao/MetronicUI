@@ -1,0 +1,63 @@
+﻿@using NewLife.Common;
+@using XCode.Membership;
+@{
+    var user = ManageProvider.User as IUser ?? User.Identity as IUser;
+    var uid = 0;
+    var roleName = "";
+    var userName = "";
+    if (user != null)
+    {
+        uid = user.ID;
+        roleName = user.Roles == null ? " " : user.Roles.Join() + " ";
+        userName = user.Name + " ( " + user.DisplayName + " ) ";
+    }
+
+    var home = NewLife.Cube.Setting.Current.StartPage;
+}
+
+<!--用户菜单-->
+<div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px,0px" aria-expanded="false">
+    <div class="kt-header__topbar-user">
+        <span class="kt-header__topbar-welcome kt-hidden-mobile">你好,</span>
+        <span class="kt-header__topbar-username kt-hidden-mobile">@user.Name</span>
+        <span class="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold">@user.Name.Substring(0, 1).ToUpper()</span>
+    </div>
+</div>
+
+<div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(1650px, 64px, 0px);">
+    <div class="kt-user-card kt-user-card--skin-dark kt-notification-item-padding-x" style="background-image: url(../../../../assets/media/bg/bg-1.jpg)">
+        <div class="kt-user-card__avatar">
+            <span class="kt-badge kt-badge--lg kt-badge--rounded kt-badge--bold kt-font-success">@user.Name.Substring(0, 1).ToUpper()</span>
+        </div>
+        <div class="kt-user-card__name">
+            @userName
+        </div>
+    </div>
+    <!--导航 -->
+    <div class="kt-notification">
+        <a href="~/" class="kt-notification__item">
+            <div class="kt-notification__item-icon">
+                <i class="fa fa-home kt-font-primary"></i>
+            </div>
+            <div class="kt-notification__item-details">
+                <div class="kt-notification__item-title kt-font-bold">
+                    网站首页
+                </div>
+            </div>
+        </a>
+        <a href="~/Admin/User/Info/@uid" class="kt-notification__item" target="main">
+            <div class="kt-notification__item-icon">
+                <i class="fa fa-user-cog kt-font-success"></i>
+            </div>
+            <div class="kt-notification__item-details">
+                <div class="kt-notification__item-title kt-font-bold">
+                    帐户信息
+                </div>
+            </div>
+        </a>
+        <div class="kt-notification__custom">
+            <a href="~/Admin/User/Logout" target="_parent" class="btn btn-google btn-sm">注 销</a>
+        </div>
+    </div>
+    <!--end: Navigation -->
+</div>

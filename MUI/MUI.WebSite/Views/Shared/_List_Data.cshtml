@@ -1,0 +1,90 @@
+﻿@using NewLife;
+@using NewLife.Web;
+@using XCode;
+@using XCode.Configuration;
+@using XCode.Membership
+@{
+    var fact = ViewBag.Factory as IEntityOperate;
+    var page = ViewBag.Page as Pager;
+    var fields = ViewBag.Fields as IList<FieldItem>;
+    var fk = fact.Unique;
+    var enableSelect = this.EnableSelect();
+
+    var hasUser = fields.Any(f => f.Name.EqualIgnoreCase("CreateUserID", "UpdateUserID"));
+    if (hasUser && ViewData["Provider"] == null) { ViewData["Provider"] = ManageProvider.Provider; }
+}
+<div style=" overflow-x: auto;">
+    <table class="table table-sm table-hover" id="list_table">
+        <thead>
+            <tr class="kt-datatable__row">
+                @if (enableSelect)
+                {
+                    @*<th class="kt-datatable__cell--center kt-datatable__cell kt-datatable__cell--check" style="width:20px;">
+                        <label class="kt-checkbox kt-checkbox--single kt-checkbox--all kt-checkbox--solid">
+                            <input type="checkbox" id="chkAll" title="全选" />
+                            <span></span>
+                        </label>
+                    </th>*@
+                }
+                @foreach (var item in fields)
+                {
+                    var sortUrl = item.OriField != null ? page.GetSortUrl(item.OriField.Name) : page.GetSortUrl(item.Name);
+                    if (item.IsIdentity)
+                    {
+                        <th class="text-center" title="@item.Description"><a href="@Html.Raw(sortUrl)">@item.DisplayName</a></th>
+                    }
+                    else if (item.Type == typeof(String))
+                    {
+                        <th class="text-left" title="@item.Description"><a href="@Html.Raw(sortUrl)">@item.DisplayName</a></th>
+                    }
+                    else if (item.Type == typeof(Decimal) || item.Type == typeof(Int32) || item.Type == typeof(Double))
+                    {
+                        <th class="text-right" title="@item.Description"><a href="@Html.Raw(sortUrl)">@item.DisplayName</a></th>
+                    }
+                    else if (item.Type == typeof(DateTime))
+                    {
+                        <th class="text-left" style="min-width:134px;" title="@item.Description"><a href="@Html.Raw(sortUrl)">@item.DisplayName</a></th>
+                    }
+                    else
+                    {
+                        <th class="text-center" title="@item.Description"><a href="@Html.Raw(sortUrl)">@item.DisplayName</a></th>
+                    }
+                }
+                @if (this.Has(PermissionFlags.Update, PermissionFlags.Delete))
+                {
+                    <th class="text-center" style="min-width:50px;">操作</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entity in Model)
+            {
+                <tr>
+                    @*@if (enableSelect)
+                    {
+                        <td class="text-center" style="width:20px;">
+                            <label class="kt-checkbox kt-checkbox--single kt-checkbox--all kt-checkbox--solid">
+                                <input type="checkbox" name="keys" value="@entity[fk.Name]" />
+                                <span></span>
+                            </label>
+                        </td>
+                    }*@
+                    @foreach (var item in fields)
+                    {
+                        @Html.Partial("_List_Data_Item", new Pair(entity, item))
+                    }
+                    @if (this.Has(PermissionFlags.Update, PermissionFlags.Delete))
+                    {
+                        <td class="text-right" style="width:100px;">
+                            @Html.Partial("_List_Data_Action", (Object)entity)
+                        </td>
+                    }
+                </tr>
+            }
+            @if (page.State != null)
+            {
+                @Html.Partial("_List_Data_Stat", page.State)
+            }
+        </tbody>
+    </table>
+</div>

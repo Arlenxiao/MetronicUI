@@ -338,3 +338,8 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/MUI/Data
+/MUI/MUI.WebSite/Config
+/MUI/MUI.WebSite/Content
+/MUI/MUI.WebSite/Plugins
+/MUI/Temp

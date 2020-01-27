@@ -1,0 +1,21 @@
+﻿@using NewLife;
+@using NewLife.Web;
+@using XCode;
+@{
+    var fact = ViewBag.Factory as IEntityOperate;
+    var page = ViewBag.Page as Pager;
+}
+<div class="flex flex-shrink-0 align-items-center kt-margin-t-5 kt-margin-b-5 kt-margin-r-5 bars kt-hidden">
+    <div class="flex-shrink-0 kt-margin-r-5">
+        @Html.ActionLink("用户链接", "Index", "UserConnect", null, new { @class = "btn btn-success btn-sm" }.ToDictionary())
+    </div>
+    <div class="flex-shrink-0 kt-margin-r-5">
+        @Html.ActionLink("用户在线", "Index", "UserOnline", null, new { @class = "btn btn-success btn-sm" }.ToDictionary())
+    </div>
+    <label for="RoleID" class="flex-shrink-0 kt-margin-r-5">角色</label>
+    @*<div class="flex-shrink-0">
+        @Html.ForDropDownList("RoleID", Role.FindAllWithCache().Cast<IEntity>().ToList(), "全部", true, new {@class = "form-control form-control-sm m-input"}.ToDictionary())
+    </div>*@
+
+</div>
+@*@Html.Partial("_DateRange")*@

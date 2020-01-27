@@ -1,0 +1,94 @@
+﻿@* 实体对象附件编辑任务窗格 *@
+
+@{
+    var entity = Model as IEntity;
+    var fact = EntityFactory.CreateOperate(entity.GetType());
+    var id = entity[fact.Unique.Name];
+}
+
+<div class="flex align-items-center justify-content-between margin-top-125">
+    <div>附件</div>
+    <div class="file-box flex align-items-center">
+        <form action="" method="post" enctype="multipart/form-data">
+            <input type='text' name='textfield' id='textfield' class='txt kt-margin-r-5' readonly />
+            <input type='button' class='cube-file kt-margin-r-5' value='浏览...' />
+            <input id="submit_upload" class="cube-file" type="submit" value="上传" disabled="disabled" />
+            <input type="file" name="input" class="file" id="input" multiple="multiple" size="28" />
+        </form>
+    </div>
+</div>
+<div class="files-content margin-top-125">
+    <div class="file-list flex align-items-center justify-content-between kt-padding-l-10 kt-padding-r-10">
+        <div class="cube-flex-1 kt-margin-r-5">文件名字不要太长文件名字不要太长文件名字不要太长</div>
+        <div class="cube-flex-none">删除</div>
+    </div>
+    <div class="file-list flex align-items-center justify-content-between kt-padding-l-10 kt-padding-r-10">
+        <div class="cube-flex-1 kt-margin-r-5">文件名字不要太长文件名字不要太长文件名字不要太长</div>
+        <div class="cube-flex-none">删除</div>
+    </div>
+    <div class="file-list flex align-items-center justify-content-between kt-padding-l-10 kt-padding-r-10">
+        <div class="cube-flex-1 kt-margin-r-5">文件名字不要太长文件名字不要太长文件名字不要太长</div>
+        <div class="cube-flex-none">删除</div>
+    </div>
+</div>
+<script type="text/javascript">
+    var selectedFileList = []; //已选文件列表
+    var paramTaskId = ""; //请求参数
+    var succsessCount = 0; //上传成功文件个数
+    var errorCount = 0; //上传失败文件个数
+    var values = [];
+    $(function () {
+        $("#input").bind("change", function () { //绑定文件选择事件
+            var files = $("#input").prop("files");
+            $.each(files, function (index, item) {
+                if (values.length > 0) { //文件去重
+                    var count = 0;
+                    $.each(values, function (index1, item1) {
+                        if (item.name == item1.innerText) {
+                            count++;
+                        }
+                    });
+                    if (count == 0) {
+                        values.push(item.name);
+                        selectedFileList.push(item);
+                        $("#submit_upload").attr("disabled", false);
+                    }
+                } else {
+                    values.push(item.name);
+                    selectedFileList.push(item);
+                    $("#submit_upload").attr("disabled", false);
+                }
+            });
+            console.log(values);
+            console.log(selectedFileList);
+            $("#textfield").val(values)
+        });
+        $("submit_upload").on(click,function () {
+            $.ajax({
+                url: "/BaseEntity/UploadAttachment",
+                type: "post",
+                data: JSON.stringify({
+                    ID:@id,
+                    Files: values
+                }),
+                cache: true,
+                contentType: 'application/json',
+                async: true,
+                processData: false,
+                success: function () {
+                    console.log("上传失败");
+
+                }
+            });
+        })
+    });
+    //判断文件是否超过限制大小
+    function checkFileLength(fileLen) {
+        if (fileLen > 4194304) {
+            $.messager.alert("提示", "上传文件大小不能超过4M", "error");
+            return false;
+        }
+        return true;
+    }
+    //上传文件
+</script>

@@ -1,0 +1,97 @@
+﻿@model IList<XCode.Membership.UserX>
+@using NewLife;
+@using NewLife.Web;
+@using XCode;
+@using XCode.Configuration;
+@using System.Web.Mvc;
+@using System.Web.Mvc.Ajax;
+@using System.Web.Mvc.Html;
+@using System.Web.Routing;
+@{
+    var fact = ViewBag.Factory as IEntityOperate;
+    var page = ViewBag.Page as Pager;
+    var fields = ViewBag.Fields as IList<FieldItem>;
+    var enableSelect = this.EnableSelect();
+    //var provider = ManageProvider.Provider;
+}
+<div class="kt-widget4" style="overflow-x:auto;">
+    <table class="table table-bordered table-hover table-striped table-condensed  table-sm ">
+        <thead>
+            <tr class="kt-datatable__row">
+                @if (enableSelect)
+                {
+                    <th class="kt-datatable__cell--center kt-datatable__cell kt-datatable__cell--check" style="width:20px;">
+                        <label class="kt-checkbox kt-checkbox--single kt-checkbox--all kt-checkbox--solid">
+                            <input type="checkbox" id="chkAll" title="全选" />
+                            <span></span>
+                        </label>
+                    </th>
+                }
+                <th class="text-center hidden-md hidden-sm hidden-xs"><a href="@Html.Raw(page.GetSortUrl("ID"))">编号</a></th>
+                <th class="text-left" title="名称。登录用户名"><a href="@Html.Raw(page.GetSortUrl("Name"))">名称</a></th>
+                <th class="text-left" style="min-width:72px;"><a href="@Html.Raw(page.GetSortUrl("DisplayName"))">昵称</a></th>
+                <th class="text-left" title="性别。未知、男、女"><a href="@Html.Raw(page.GetSortUrl("Sex"))">性别</a></th>
+                <th class="text-left"><a href="@Html.Raw(page.GetSortUrl("Mail"))">邮件</a></th>
+                <th class="text-right"><a href="@Html.Raw(page.GetSortUrl("Mobile"))">手机</a></th>
+                <th class="text-left"><a href="@Html.Raw(page.GetSortUrl("DepartmentID"))">部门</a></th>
+                <th class="text-left" style="min-width:72px;"><a href="@Html.Raw(page.GetSortUrl("RoleID"))">角色</a></th>
+                <th class="text-center"><a href="@Html.Raw(page.GetSortUrl("Online"))">在线</a></th>
+                <th class="text-center"><a href="@Html.Raw(page.GetSortUrl("Enable"))">启用</a></th>
+                <th class="text-right" style="min-width:72px;"><a href="@Html.Raw(page.GetSortUrl("Logins"))">登录次数</a></th>
+                <th class="text-right" style="min-width:130px;"><a href="@Html.Raw(page.GetSortUrl("LastLogin"))">最后登录</a></th>
+                <th class="text-left" style="min-width:60px;"><a href="@Html.Raw(page.GetSortUrl("LastLoginIP"))">最后IP</a></th>
+                <th class="text-left">日志</th>
+                @if (this.Has(PermissionFlags.Update, PermissionFlags.Delete))
+                {
+                    <th class="text-center">操作</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entity in Model)
+            {
+                <tr>
+                    @if (enableSelect)
+                    {
+                        <td class="text-center" style="width:20px;">
+                            <label class="kt-checkbox kt-checkbox--single kt-checkbox--all kt-checkbox--solid">
+                                <input type="checkbox" name="keys" value="@entity.ID" />
+                                <span></span>
+                            </label>
+                        </td>
+                    }
+                    <td class="text-center hidden-md hidden-sm hidden-xs">@entity.ID</td>
+                    <td class="text-left">@entity.Name</td>
+                    <td class="text-left">@entity.DisplayName</td>
+                    <td class="text-left">@entity.Sex</td>
+                    <td class="text-left">@entity.Mail</td>
+                    <td class="text-right">@entity.Mobile</td>
+                    <td class="text-left"><a href="Department?ID=@entity.DepartmentID">@entity.DepartmentName</a></td>
+                    <td class="text-left"><a href="Role?ID=@entity.RoleID">@entity.RoleName</a></td>
+                    <td class="text-center">
+                        <i class="la la-@(entity.Online ? "check" : "close")" style="color: @(entity.Online ? "green" : "red");"></i>
+                    </td>
+                    <td class="text-center">
+                        <i class="la la-@(entity.Enable ? "check" : "close")" style="color: @(entity.Enable ? "green" : "red");"></i>
+                    </td>
+                    <td class="text-right">@entity.Logins.ToString("n0")</td>
+                    <td class="text-right">@entity.LastLogin.ToFullString("")</td>
+                    <td class="text-left" title="@entity.LastLoginAddress">@entity.LastLoginIP</td>
+                    <td class="text-left">@Html.ActionLink("日志", "Index", "Log", new { UserID = entity.ID }, null)</td>
+                    @if (this.Has(PermissionFlags.Update, PermissionFlags.Delete))
+                    {
+                        <td class="text-right" style="width:90px;">
+                            @Html.Partial("_List_Data_Action", (Object)entity)
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script src="~/assets/vendors/custom/datatables/datatables.bundle.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("list_table").DataTable();
+    });
+</script>

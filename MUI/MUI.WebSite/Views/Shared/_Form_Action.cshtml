@@ -1,0 +1,25 @@
+﻿@using XCode.Configuration;
+@using XCode.Membership;
+@{
+    var entity = Model as IEntity;
+    var isNew = entity.IsNullKey;
+    var fields = entity.GetType().AsFactory().AllFields; // 通过实体工厂获取所有字段
+
+    //var hasAttachment = entity.GetType().GetCustomAttributes(typeof(AttachmentAttribute), true).Length > 0;
+}
+<div class="kt-portlet__head kt-portlet__head--lg">
+    <div class="kt-portlet__head-label">
+        <a href="@Url.Action("Index")" class="btn btn-secondary kt-margin-r-10">
+            <i class="la la-arrow-left"></i>
+            <span class="kt-hidden-mobile">返 回</span>
+        </a>
+    </div>
+    <div class="kt-portlet__head-toolbar">
+        <div class="btn-group">
+            <button type="submit" class="btn btn-brand">
+                <i class="la la-@(isNew ? "plus" : "save")" style="margin-top: -1px;"></i>
+                <span class="kt-hidden-mobile">@(isNew ? "保 存" : "保 存")</span>
+            </button>
+        </div>
+    </div>
+</div>

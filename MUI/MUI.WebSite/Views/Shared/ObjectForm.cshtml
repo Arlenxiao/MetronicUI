@@ -1,0 +1,90 @@
+﻿@model Object
+@using System.ComponentModel;
+@using System.Reflection;
+@using NewLife.Cube;
+@using NewLife.Reflection;
+@using XCode.Membership
+@{
+    Layout = NewLife.Cube.Setting.Current.Layout;
+
+    var Obj = Model as Object;
+    var pis = ViewBag.Properties as IEnumerable<PropertyInfo>;
+    var menu = ViewBag.Menu as IMenu;
+}
+
+
+<div class="row">
+    <div class="col-xl-3 col-lg-4">
+        <div class="kt-portlet kt-portlet--height-fluid">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <span class="kt-portlet__head-icon">
+                        <i class="la la-cubes kt-font-primary"></i>
+                    </span>
+                    <h3 class="kt-portlet__head-title">系统选项</h3>
+                </div>
+            </div>
+            @Html.Partial("_Object_Nav")
+        </div>
+    </div>
+    <div class="col-xl-9 col-lg-8">
+        <div class="kt-portlet">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <span class="kt-portlet__head-icon">
+                        <i class="la la-gear"></i>
+                    </span>
+                    <h3 class="kt-portlet__head-title">@(menu != null ? menu.DisplayName : ViewBag.Title)</h3>
+                </div>
+            </div>
+            <div class="kt-form kt-form--label-right">
+                <div class="kt-portlet__body kt-padding-b-5">
+                    @using (Html.BeginForm("Update", null))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+                        foreach (var pi in pis)
+                        {
+                            var name = pi.Name;
+                            var dis = pi.GetDisplayName();
+                            var des = pi.GetDescription();
+                            if (dis.IsNullOrEmpty() && !des.IsNullOrEmpty()) { dis = des; des = null; }
+                            if (!dis.IsNullOrEmpty() && des.IsNullOrEmpty() && dis.Contains("。"))
+                            {
+                                des = dis.Substring("。");
+                                dis = dis.Substring(null, "。");
+                            }
+                            <div class="form-group row">
+                                <label class="col-form-label col-lg-3 col-sm-12" for="@pi.Name">@(dis ?? pi.Name)</label>
+                                <div class="kt-margin-l-5 kt-margin-r-5 flex align-items-center" style="width: 18px; font-size: 1.5rem;">
+                                    @if (!des.IsNullOrEmpty())
+                                    {
+                                        <i class="la la-question-circle" data-toggle="kt-tooltip" data-original-title="@des" data-placement="top" @*style="margin-top: 4px;"*@></i>
+                                    }
+                                </div>
+                                <div class="col-lg-4 col-md-9 col-sm-12">
+                                    @Html.ForEditorX(pi.Name, Obj.GetValue(pi), pi.PropertyType, null, new { @class = "form-control" }.ToDictionary())
+                                    @Html.ValidationMessage(pi.Name)
+                                </div>
+                            </div>
+                        }
+                        if (this.Has(PermissionFlags.Update))
+                        {
+                            <div class="kt-portlet__foot">
+                                <div class="form-group row kt-margin-b-5">
+                                    <label class="col-form-label col-lg-3 col-sm-12"></label>
+                                    <div class="kt-margin-l-5 kt-margin-r-5 flex align-items-center" style="width:7px;"></div>
+                                    <div class="col-lg-4 col-md-9 col-sm-12 flex align-items-center">
+                                        <button type="submit" class="btn  btn-success kt-margin-r-10"><i class="la la-save"></i>保存</button>
+                                        <button type="reset" class="btn btn-secondary" onclick="history.go(-1)"><i class="la la-remove"></i>返回</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

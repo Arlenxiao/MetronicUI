@@ -1,0 +1,62 @@
+﻿@using NewLife.Model;
+@using XCode.Membership;
+@{
+    var user = ViewBag.User as IUser ?? User.Identity as IUser;
+
+    var fact = ObjectContainer.Current.Resolve<IMenuFactory>();
+
+    var item = Model as IMenu;
+    var childs = fact.GetMySubMenus(item.ID, user).Where(m => m.Visible);
+    var url = item.Url.IsNullOrEmpty() ? "" : Url.Content(item.Url);
+
+    var _controller = ViewContext.RouteData.Values["controller"]+"";
+    var cfgs_list = new List<string>() { "Core","Cube","XCode","Sys","CompanySetting" };
+    if (cfgs_list.Contains(_controller)) { _controller = "Cube"; }
+}
+
+@if (childs.Any())
+{
+    <li class="kt-menu__item kt-menu__item--submenu" aria-haspopup="true" m-menu-submenu-toggle="hover">   
+        <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
+            @if (!@item.Icon.IsNullOrEmpty())
+            {
+                <i class="kt-menu__link-icon @item.Icon"></i>
+            }
+            else
+            {
+                <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+            }
+            <span class="kt-menu__link-text">@item.DisplayName</span>
+            <i class="kt-menu__ver-arrow la la-angle-right"></i>
+        </a>
+        <div class="kt-menu__submenu">
+            <span class="kt-menu__arrow"></span>
+            <ul class="kt-menu__subnav">
+                <li class="kt-menu__item kt-menu__item--parent" aria-haspopup="true">
+                    <span class="kt-menu__link"><span class="kt-menu__link-text">@item.DisplayName</span></span>
+                </li>
+                @foreach (var menu in childs)
+                {
+                    @Html.Partial("_Nav_AsideMenu_Item", menu);
+                }
+            </ul>
+        </div>
+    </li>
+}
+else
+{
+    var  _open= _controller == item.Name ? "kt-menu__item--active" : "";
+    <li class="kt-menu__item @_open" aria-haspopup="true">
+        <a href="@url" class="kt-menu__link" target="_self" >
+            @if (!@item.Icon.IsNullOrEmpty())
+            {
+                <i class="kt-menu__link-icon @item.Icon"></i>
+            }
+            else
+            {
+                <i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i>
+            }
+            <span class="kt-menu__link-text "> @item.DisplayName</span>
+        </a>
+    </li>
+}

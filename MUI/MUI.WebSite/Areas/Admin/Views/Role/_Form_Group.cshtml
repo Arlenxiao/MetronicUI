@@ -1,0 +1,31 @@
+﻿@using NewLife;
+@using XCode;
+@using XCode.Configuration;
+@{
+    var pair = Model as Pair;
+    var entity = pair.First as IEntity;
+    var item = pair.Second as FieldItem;
+
+    var set = NewLife.Cube.Setting.Current;
+    var cls = set.FormGroupClass;
+    if (cls.IsNullOrEmpty()) { cls = "form-group col-12 col-sm-4 col-lg-4"; }
+
+    string[] exes = { "扩展1", "扩展2", "扩展3", "扩展4", "扩展5", "扩展6" };
+
+}
+@if (item.Name == "Permission")
+{
+    if (!entity.IsNullKey)
+    {
+        @Html.Partial("SetPermission", new { Role = entity })
+    }
+}
+else
+{
+    if (!item.DisplayName.EqualIgnoreCase(exes))
+    {
+        <div class="form-group form-group-xs row">
+            @Html.Partial("_Form_Item", new Pair(entity, item))
+        </div>
+    }
+}

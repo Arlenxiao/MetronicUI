@@ -1,0 +1,35 @@
+﻿@using XCode
+@using XCode.Membership
+@{
+    var menu = ViewBag.Menu as IMenu;
+    var home = NewLife.Cube.Setting.Current.StartPage;
+    var title = ViewBag.Title + "";
+}                                                 
+
+<!-- begin:: Subheader -->
+<div class="kt-subheader kt-grid__item">
+    <div class="kt-subheader__main">
+        <h3 class="kt-subheader__title">@title</h3>
+        <span class="kt-subheader__breadcrumbs-separator kt-hidden"></span>
+
+        <!-- 页面导航区 -->
+        <div class="kt-subheader__breadcrumbs">
+            <a href="#" class="kt-subheader__breadcrumbs-home"><i class="flaticon2-shelter"></i></a>
+            <span class="kt-subheader__breadcrumbs-separator"></span>
+            @if (menu != null)
+            {
+                foreach (IMenu item in (menu as IEntityTree).AllParents)
+                {
+                    if (item.ID != 0)
+                    {
+                        <a href="#" class="kt-subheader__breadcrumbs-link">@item.DisplayName</a>
+                        <span class="kt-subheader__breadcrumbs-separator"></span>
+                    }
+                }
+            }
+            <span class="kt-subheader__breadcrumbs-separator"></span>
+            <a href="#" class="kt-subheader__breadcrumbs-link">@(menu != null ? menu.DisplayName : ViewBag.Title)</a>
+        </div>
+    </div>
+</div>    
+<!-- end:: Subheader -->

@@ -1,0 +1,240 @@
+﻿@* 实体对象坐标地图显示任务窗格分部视图 *@
+@{
+    var entity = Model as IEntity;
+    var fact = EntityFactory.CreateOperate(entity.GetType());
+    var entityId = Convert.ToInt32(entity[fact.Unique.Name]);
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString().ToLower();
+}
+<div class="margin-top-125">坐标</div>
+<div class="cube-map-container margin-top-125" style="position: relative;">
+    <div class="input-group cube-map-search-box">
+        <div class="kt-input-icon kt-input-icon--right kt-margin-l-20 kt-margin-r-20">
+            <input type="text" class="form-control" placeholder="address..." id="generalSearch">
+            <span class="kt-input-icon__icon kt-input-icon__icon--right" onclick="return getText(this)">
+                <span><i class="la la-search"></i></span>
+            </span>
+        </div>
+    </div>
+    <div id="allmap"></div>
+</div>
+
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=NpAwgtFLSlxATWYIQoGZdFI3d8qCoWN3"></script>
+<script type="text/javascript">
+    var map = new BMap.Map("allmap", { enableMapClick: false }), // 创建Map实例
+        lng = 113.81294682347,
+        lat = 23.051578106566,
+        point, adds,
+        opts = {
+            width: 0, // 信息窗口宽度
+            height: 0, // 信息窗口高度
+            enableMessage: true //设置允许信息窗发送短息
+        };
+
+        //调用控制器方法初始化地图
+    $.ajax({
+        url: "../InitMapMarker",
+        data: JSON.stringify({ entityId: @entityId }),
+        type: "post",
+        dataType: "json",
+        cache: false,
+        contentType: 'application/json',
+        processData: false,
+        success: function (data) {
+            console.log("初始化地图。")
+            console.log(data);
+        }
+    });
+    // 获取标注列表
+    //data = [{
+    //    Name: "表1",
+    //    LatLng: "114.222, 36.552",
+    //    Color: "测试",
+    //    Icon: "",
+    //    CentrePoint: {
+    //        weight: "222kg",
+    //        weight: "222kg",
+    //        weight: "222kg",
+    //    }
+    //}];
+    adds = [ //标注点数组
+        [116.307852, 40.057031, "标注说明1","标注具体显示内容1"],
+        [116.313082, 40.047674, "这是一个div222", "标注具体显示内容2"],
+        [116.328749, 40.026922, "这是一个div333", "标注具体显示内容3"],
+        [116.347571, 39.988698, "这是一个div444", "标注具体显示内容4"],
+        [116.316163, 39.997753, "这是一个div555", "标注具体显示内容5"],
+        [116.345867, 39.998333, "这是一个div666", "标注具体显示内容6"],
+        [116.403472, 39.999411, "这是一个div777", "标注具体显示内容7"],
+        [116.307901, 40.05901, "这是一个div888", "标注具体显示内容8"]
+    ];
+    if (adds && adds[0] && adds[0][0] && adds[0][1]) {
+        lat = adds[0][0];
+        lng = adds[0][1];
+        draw(map);
+    } else {
+        var geolocation = new BMap.Geolocation();
+        //------------------ 
+        // 开启SDK辅助定位
+        // geolocation.enableSDKLocation();
+        geolocation.getCurrentPosition(function (r) {
+            if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                // map.panTo(r.point);
+                lat = r.point.lat;
+                lng = r.point.lng;
+                draw(map);
+            } else {
+                alert('failed' + this.getStatus());
+                draw(map);
+            }
+        });
+    }
+    // 绘制地图
+    function draw(map) {
+        console.log("绘制地图：" + lat + ',' + lng);
+        point = new BMap.Point(lat, lng);
+        map.centerAndZoom(point, 15);
+        cdr(map)
+    }
+    // 添加控件和样式
+    function cdr(map) {
+        // map.addControl(new BMap.NavigationControl()); //缩放控件
+        // map.addControl(new BMap.ScaleControl()); //比例尺控件
+        map.addControl(new BMap.GeolocationControl()); //定位控件
+        // map.enableDragging(); //标记开启拖拽 
+        // map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
+        map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+        // 添加标注
+        marker(map);
+        rightClick(map); // 鼠标右键地图事件
+    }
+    // 添加标注
+    function marker(map) {
+        for (var i = 0; i < adds.length; i++) {
+            var content = adds[i][2];
+            var markersPoint = new BMap.Point(adds[i][0], adds[i][1]);
+            var marker = new BMap.Marker(markersPoint);
+            map.addOverlay(marker);
+            // 标注说明
+            label(marker, adds[i][2], { offset: new BMap.Size(20, -10) })
+            // 右键事件
+            var markerMenu = new BMap.ContextMenu();
+            markerMenu.addItem(new BMap.MenuItem('删除标注', deleteMarker.bind(marker)));
+            marker.addContextMenu(markerMenu); //给标记添加右键菜单
+            // 鼠标经过
+            //addClickHandler(map, content, marker);
+            // 点击事件
+            createTag(map, marker, adds[i][2]);
+        }
+    }
+    // 标注说明
+    function label(a, b, c) {
+        var label = new BMap.Label(b, c);
+        label.setStyle({
+            padding: "0.25rem",
+            backgroundColor: "rgba(255,255,255,0.8)",
+            border: "0"
+        });
+        a.setLabel(label);
+    }
+    // 删除标注
+    function deleteMarker(e) {
+        console.log('删除标注:' + JSON.stringify(e));
+        //调用删除 返回json数据
+        var Latlng = `${e.lng},${e.lat}`;
+                console.log(Latlng);
+                var data = {
+                    entityId: @entityId,
+                    latlng: Latlng
+                }
+                var datas = JSON.stringify(data);
+               $.ajax({
+                   url: "../DeleteMapMarker",
+            data: datas,
+            type: "post",
+            dataType: "json",
+            cache: false,
+            contentType: 'application/json',
+            processData: false,
+            success: function (data) {
+                console.log(data);
+            }
+        })
+    }
+    // 鼠标经过
+    function addClickHandler(map, content, marker) {
+        marker.addEventListener("mouseover", function (e) {
+            var p = e.target;
+            var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+            var infoWindow = new BMap.InfoWindow(content, opts); // 创建信息窗口对象
+            map.openInfoWindow(infoWindow, point); //开启信息窗口
+        });
+        marker.addEventListener("mouseout", function (e) {
+            map.closeInfoWindow(); //开启信息窗口
+        });
+    }
+    // 点击标注
+    function createTag(map, marker, m) {
+        var text = "<p>许可证号：" + m + "</p><p>申请人/单位：" + m +
+            "</p><p>许可事项：" + m + "</p><p>现场照片:<a href='http://www.baidu.com'>点击查看</p>";
+
+        //给标记添加点击事件以及显示窗口信息
+        var infoWindow = new BMap.InfoWindow("<p style='font-size:14px;'>" + m + "</p>");
+        marker.addEventListener("click", function () {
+            this.openInfoWindow(infoWindow);
+        });
+    }
+    // 鼠标右键地图事件
+    function rightClick(map) {
+        var menu = new BMap.ContextMenu();
+        var txtMenuItem = [{
+            text: '标注此点',
+            callback: function (e) {
+                //console.log('添加坐标：' + JSON.stringify(e));
+                var Latlng = `${e.lng},${e.lat}`;
+                console.log(Latlng);
+                var data = {
+                    entityId: @entityId,
+                    latlng: Latlng
+                }
+                var datas = JSON.stringify(data);
+               $.ajax({
+             url: "../SetMapMarker",
+            data: datas,
+            type: "post",
+            dataType: "json",
+            cache: false,
+            contentType: 'application/json',
+            processData: false,
+            success: function (data) {
+                console.log(data);
+                
+            }
+        })
+            }
+        }];
+        for (var i = 0; i < txtMenuItem.length; i++) {
+            menu.addItem(new BMap.MenuItem(txtMenuItem[i].text, txtMenuItem[i].callback, 100));
+        }
+        map.addContextMenu(menu);
+    }
+    // 关键字检索
+    function getText(a) {
+        //var myKeys = ["酒店", "加油站"];
+        var myKeys = a.parentNode.getElementsByTagName('input')[0].value;
+
+        if (myKeys.replace(/(^\s*)|(\s*$)/g, "")) {
+            var map = new BMap.Map('allmap', {
+                enableMapClick: false
+            });
+            var local = new BMap.LocalSearch(map, {
+                renderOptions: {
+                    map: map
+                }
+            });
+            local.search(myKeys);
+            map.addControl(new BMap.GeolocationControl()); //定位控件
+            map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+            cdr(map);
+        }
+
+    }
+</script>

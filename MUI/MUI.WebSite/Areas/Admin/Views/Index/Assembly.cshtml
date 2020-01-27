@@ -1,0 +1,60 @@
+﻿@using System.Diagnostics;
+@using System.Collections;
+@using System.Reflection;
+@using System.Runtime.Versioning;
+@using NewLife.Common;
+@{
+    Layout = NewLife.Cube.Setting.Current.Layout;
+
+    ViewBag.Title = "程序集列表";
+
+    var asm = Assembly.GetExecutingAssembly();
+    var att = asm.GetCustomAttribute<TargetFrameworkAttribute>();
+    var ver = att.FrameworkDisplayName ?? att.FrameworkName;
+}
+                  
+<div class="kt-portlet kt-portlet--last kt-portlet--mobile">
+    <div class="kt-portlet__head">
+        <div class="kt-portlet__head-label">
+            <span class="kt-portlet__head-icon">
+                <i class="la la-gear"></i>
+            </span>
+            <h3 class="kt-portlet__head-title">
+                程序集列表(@AppDomain.CurrentDomain.FriendlyName )
+            </h3>
+        </div>
+    </div>
+    <div class="kt-portlet__body" style="overflow-x:auto;">    
+        <table class="table table-bordered table-hover table-striped table-condensed table-responsive">
+            <tr>
+                <th>名称</th>
+                <th>标题</th>
+                <th>文件版本</th>
+                <th>内部版本</th>
+                <th>编译时间</th>
+                <th>路径</th>
+            </tr>
+            @foreach (AssemblyX item in ViewBag.Asms)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Title</td>
+                    <td>@item.FileVersion</td>
+                    <td>@item.Version</td>
+                    <td>@item.Compile.ToFullString()</td>
+                    <td>
+                        @{
+                            var location = String.Empty;
+                            try
+                            {
+                                location = item.Asm.Location;
+                            }
+                            catch { }
+                        }
+                        @location
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

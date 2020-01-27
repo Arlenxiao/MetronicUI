@@ -1,0 +1,33 @@
+﻿@using NewLife;
+@using XCode;
+@using XCode.Configuration;
+@{
+    var entity = Model as IEntity;
+    var fields = ViewBag.Fields as IList<FieldItem>;
+
+    var fc = fields.Count;
+    var fc2 = fields.Count / 2;
+    var num = 0;
+}
+<div class="kt-container  kt-container--fluid  kt-grid__item kt-grid__item--fluid p-0">
+    <div class="row m-0">
+            <div class="col-xl-12 p-0">
+                <div class="kt-portlet shadow-none">
+                    <div class="kt-form kt-form--label-right">
+                        <div class="kt-portlet__body">
+                            @foreach (var item in fields)
+                            {
+                                if (!item.IsIdentity)
+                                {
+                                    @Html.Partial("_Form_Group", new Pair(entity, item))
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+     
+        @Html.Partial("_Form_Footer", entity)
+    </div>
+</div>

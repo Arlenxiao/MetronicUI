@@ -1,0 +1,50 @@
+﻿@using NewLife.Common;
+@using NewLife.Cube
+@using XCode.Membership
+@{
+    var user = ViewBag.User as IUser ?? User.Identity as IUser;
+}
+<!--工具-->
+<div class="kt-section__content pull-right">
+    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+        <a href="@Url.Action("ExportExcel")" class="btn btn-sm btn-secondary " title="导出Excel文件"><i class="fa fa-file-excel text-success"></i></a>
+        <a href="@Url.Action("ExportXml")" class="btn btn-sm btn-secondary" title="导出Xml文件"><i class="fa fa-file-code text-danger"></i></a>
+        <a href="@Url.Action("ExportJson")" class="btn btn-sm btn-secondary" title="导出为Json对象"><i class="fa fa-file-alt"></i></a>
+    </div>
+    <div class="dropdown dropdown-inline p">
+        <button type="button" class="btn btn-outline-brand btn-elevate-hover btn-icon btn-sm btn-icon-md " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="flaticon-more-1"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(30px, 30px, 0px);">
+            @if (this.Has(PermissionFlags.Delete))
+            {
+                <a class="dropdown-item text-warning" href="@Url.Action("DeleteSelect")" data-action="action" data-fields="keys" data-confirm="该操作将删除选中数据并不可恢复！确认删除？" title="删除选中数据"><i class="la la-check-square text-warning"></i> 删除选中</a>
+                <a class="dropdown-item text-danger" href="@Url.Action("DeleteAll")" data-action="action" data-confirm="该操作将删除当前查询的所有数据并不可恢复！确认删除？" title="删除当前查询的所有数据"><i class="la la-list-alt text-danger"></i> 删除全部</a>
+            }
+            @if (SysConfig.Current.Develop)
+            {
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="@Url.Action("MakeList")"><i class="la la-plus"></i> 生成列表</a>
+                <a class="dropdown-item" href="@Url.Action("MakeForm")"><i class="la la-user"></i> 生成表单</a>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    if (sessionStorage.state) {
+        $("#toggleBar").html("隐藏自定义搜索框");
+        $(".bars").removeClass("kt-hidden");
+    }
+    $("#toggleBar").click(function () {
+        if (!sessionStorage.state) {
+            $(this).html("隐藏自定义搜索框");
+            $(".bars").removeClass("kt-hidden");
+            sessionStorage.state = "true";
+        } else {
+            $(this).html("显示自定义搜索框");
+            $(".bars").addClass("kt-hidden");
+            sessionStorage.removeItem("state");
+        }
+    })
+</script>

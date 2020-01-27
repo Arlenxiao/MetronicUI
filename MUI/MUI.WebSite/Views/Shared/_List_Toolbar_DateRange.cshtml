@@ -1,0 +1,13 @@
+﻿@using NewLife.Web
+@{
+    var formatStr = (Model is String) ? Model : "yyyy-MM-dd";
+    var p = ViewBag.Page as Pager;
+}
+<!--根据时间筛选-->
+<label class="btn btn-sm p-0 pull-right">
+    <div class="input-group input-group-sm flex-nowrap align-items-stretch">
+        <div class="input-group-prepend"><span class="input-group-text p-0 pl-2"><i class="la la-calendar" aria-hidden="true"></i></span></div>
+        <input type="text" name="dtStart" class="form-control form-control-sm pull-right form_datetime" autocomplete="off" placeholder="开始时间" value="@p["dtStart"]" aria-describedby="basic-addon2" style="width: 95px;">
+        <input type="text" name="dtEnd" class="form-control form-control-sm pull-right form_datetime" autocomplete="off" placeholder="结束时间" value="@p["dtEnd"]" aria-describedby="basic-addon2" style="width: 95px;">
+    </div>
+</label>

@@ -1,0 +1,33 @@
+﻿@using NewLife.Cube.Web;
+@{
+    /**/
+
+    var set = NewLife.Cube.Setting.Current;
+    var returnUrl = ViewBag.ReturnUrl as String;
+    var ms = NewLife.Web.OAuthConfig.Current.Items.Where(e => !e.AppID.IsNullOrEmpty()).ToList();
+    var dic = "NewLife=新生命,Baidu=百度,Weixin=微信,Taobao=淘宝".SplitAsDictionary("=", ",");
+}
+@if (ms.Count > 0 && set.AutoRegister)
+{
+    <div class="kt-login__options">
+        <a href="#" class="btn btn-primary  kt-btn--pill kt-btn--icon">
+            <span>
+                <i class="fab fa-facebook-f"></i>
+                <span>Facebook</span>
+            </span>
+        </a>
+        <a href="#" class="btn btn-info  kt-btn--pill kt-btn--icon">
+            <span>
+                <i class="fab fa-twitter"></i>
+                <span>Twitter</span>
+            </span>
+        </a>
+        <a href="#" class="btn btn-danger kt-btn--pill  kt-btn--icon">
+            <span>
+                <i class="fab fa-google"></i>
+                <span>Google</span>
+            </span>
+        </a>
+    </div>
+
+}

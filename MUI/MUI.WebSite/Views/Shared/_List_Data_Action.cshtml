@@ -1,0 +1,36 @@
+﻿@using XCode.Membership
+@{
+    var entity = Model as IEntity;
+
+    var rv = entity.GetRouteKey();
+}
+<!--双击打开添加样式 .editcell 即可-->
+@if (this.Has(PermissionFlags.Update))
+{
+    <a href="@Url.Action("Edit", rv)" class="btn btn-outline-hover-primary text-primary btn-sm p-0 pr-2 pl-2 pt-1 editcell" title="编辑">
+        <i class="flaticon2-edit text-primary"></i>
+    </a>
+}
+else if (this.Has(PermissionFlags.Detail))
+{
+    <a href="@Url.Action("Detail", rv)" class="btn btn-outline-hover-primary text-primary btn-sm p-0 pr-2 pl-2 pt-1" title="查看">
+        <i class="flaticon2-document text-primary"></i>
+    </a>
+}
+@if (this.Has(PermissionFlags.Delete))
+{
+    var fact = ViewBag.Factory as IEntityOperate;
+    var fi = (fact == null || fact.Fields == null) ? null : fact.Fields.FirstOrDefault(e => e.Name.EqualIgnoreCase("Deleted", "IsDelete", "IsDeleted"));
+    if (fi != null && fi.Type == typeof(Boolean) && (Boolean)entity[fi.Name])
+    {
+        <a title="恢复" class="btn btn-outline-hover-success btn-sm p-0 pr-1 pl-2 pt-1 swal_tip" data-url="@Url.Action("Delete", rv)" data-type="warning" data-title="确认恢复？">
+            <i class="flaticon-layer text-danger"></i>
+        </a>
+    }
+    else
+    {
+        <a title="删除" class="btn btn-outline-hover-success btn-sm p-0 pr-1 pl-2 pt-1 swal_tip" data-url="@Url.Action("Delete", rv)" data-type="error" data-title="确认删除？">
+            <i class="flaticon-delete text-danger"></i>
+        </a>
+    }
+}

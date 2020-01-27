@@ -1,0 +1,141 @@
+﻿@* 实体对象任务窗格分部视图，在这里决定实体对象附加信息（标签、坐标、附件、通知及工作流）的显示方式 *@
+@using XCode;
+@using XCode.Configuration;
+@{
+    var entity = Model as IEntity;
+    var IsNew = entity.IsNullKey;
+    var fields = entity.GetType().AsFactory().AllFields; // 通过实体工厂获取所有字段
+    //var hasAttachment = entity.GetType().GetCustomAttributes(typeof(AttachmentAttribute), true).Length > 0;
+}
+<style>
+    .margin-top-125 {
+        margin-top: 1.25rem;
+    }
+    /*附件列表*/
+    .file-box {
+        position: relative;
+        width: 330px
+    }
+
+    .txt {
+        height: 24px;
+        border: 1px solid #cdcdcd;
+        width: 180px;
+    }
+
+    .cube-file {
+        background-color: #FFF;
+        border: 1px solid #CDCDCD;
+        height: 24px;
+        width: 70px;
+        line-height: 24px;
+    }
+
+    .file {
+        position: absolute;
+        top: 50%;
+        left: 185px;
+        height: 24px;
+        filter: alpha(opacity:0);
+        opacity: 0;
+        width: 70px;
+        margin-top: -12px;
+    }
+
+    .files-content {
+        width: 100%;
+        background-color: #fbfbfb;
+        border: 1px solid #eee;
+    }
+
+    .file-list {
+        border-top: 1px solid #eee;
+        height: 2.5rem;
+    }
+
+        .file-list:first-child {
+            border-top: 0;
+        }
+    /* 地图容器 */
+    .cube-map-container, #allmap {
+        width: 100%;
+        height: 250px;
+    }
+
+    /* 地图定位及搜索控件 */
+    .cube-map-search-box {
+        position: absolute;
+        top: 10px;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        display: flex;
+        height: 30px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .anchorBL,
+    .BMap_cpyCtrl.BMap_noprint.anchorBL,
+    .BMap_stdMpCtrl.BMap_stdMpType0.BMap_noprint.anchorTL {
+        display: none;
+    }
+
+    .BMap_noprint.anchorBL {
+        display: block;
+    }
+    /*滚动条*/
+    .scrollbar {
+        width: 30px;
+        height: 300px;
+        margin: 0 auto;
+    }
+
+    .test-5::-webkit-scrollbar { /*滚动条整体样式*/
+        width: 5px; /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+    }
+
+    .test-5::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+        border-radius: 10px;
+        background-color: #c1c1c1;
+        /*background-color: #F90;
+        background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent);*/
+    }
+
+    .test-5::-webkit-scrollbar-track { /*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        /*border-radius: 10px;*/
+        background: #EDEDED;
+    }
+</style>
+<div class="modal fade" id="kt_modal_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog tab-content" role="document" style="float:right;margin:0;margin-right: -17px;width:500px;height:100%;">
+        <div class="modal-content" style="height: 100%; border-radius: 0;">
+            <div class="modal-header flex-shrink-0">
+                <h5 class="modal-title" id="exampleModalLabel">附加信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body test-5" style="overflow-y: auto; overflow-x: hidden; height: calc(100% - 3.8rem);">
+                <div class="tab-content">
+                    @if (fields.Any(f => f.ColumnName.EqualIgnoreCase("Tags")))
+                    {
+                        @Html.Partial("_Form_TaskView_Tags", entity)
+                    }
+
+                    
+
+                    @if (!IsNew&&fields.Any(f => f.ColumnName.EqualIgnoreCase("LatLng")))
+                    {
+                        @Html.Partial("_Form_TaskView_Map", entity)
+                    }
+                </div>
+            </div>
+            @*<div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>*@
+        </div>
+    </div>
+</div>
+

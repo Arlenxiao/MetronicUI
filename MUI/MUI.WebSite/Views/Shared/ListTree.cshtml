@@ -1,0 +1,16 @@
+﻿@using NewLife.Web;
+@using XCode;
+@{
+    Layout = NewLife.Cube.Setting.Current.Layout;
+
+    var fact = ViewBag.Factory as IEntityOperate;
+    var page = ViewBag.Page as Pager;
+}
+<div class="kt-portlet kt-portlet--mobile" id="kt_portlet">
+    <div class="kt-portlet__head p-0  border-bottom-0">
+        @Html.Partial("_List_Toolbar")
+    </div>
+    <div class="kt-portlet__body p-0">
+        @Html.Partial("_ListTree_Data")
+    </div>
+</div>

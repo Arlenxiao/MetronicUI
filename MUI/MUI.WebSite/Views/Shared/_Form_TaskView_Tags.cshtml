@@ -1,0 +1,64 @@
+﻿@* 实体对象标签显示、编辑任务窗格分部视图 *@
+@using XCode;
+@using XCode.Configuration;
+@{
+    var entity = Model as IEntity;
+    var tags = (entity["Tags"] as String).Split(",", ";", "|"); // 分隔标签
+ }
+<div>标签</div>
+<div class="tags-content">
+    <div class="tags-box flex flex-wrap align-items-center" style="margin-top: calc(1.25rem - 5px);">
+        @foreach (var tag in tags)
+        {
+            <div class="kt-margin-r-5 kt-margin-t-5">
+                <span class="btn btn-secondary kt-padding-l-10 kt-padding-r-10 kt-padding-t-5 kt-padding-b-5">@tag</span>
+            </div>
+        }
+        <div class="kt-margin-r-5 kt-margin-t-5">
+            <div class="btn btn-primary kt-padding-l-10 kt-padding-r-10 kt-padding-t-5 kt-padding-b-5 tags-change">修改标签...</div>
+        </div>
+    </div>
+    <div class="margin-top-125" style="display: none;">
+        <textarea class="form-control" rows="3" placeholder="标签之间用英文“,”“;”“|”隔开"></textarea>
+        <div class="flex justify-content-end align-items-center kt-margin-t-10 kt-padding-r-10">
+            <input type="button" class="btn btn-secondary kt-padding-l-10 kt-padding-r-10 kt-padding-t-5 kt-padding-b-5 kt-margin-r-10 tags-change" value="取消">
+            <input type="button" class="btn btn-primary kt-padding-l-10 kt-padding-r-10 kt-padding-t-5 kt-padding-b-5 tags-sunmit" value="确认">
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('.tags-change').click(function () {
+        var textarea = $(this).parents('.tags-content').find('textarea');
+        $(this).parent().parent().hide();
+        $(this).parent().parent().siblings().show();
+        var spans = $(this).parents('.tags-content').find('span');
+        var tags = [];
+        spans.each(function (index) {
+            if (index < spans.length - 1) {
+                tags += $(this).html() + ',';
+            } else {
+                tags += $(this).html();
+            }            
+        })
+        textarea.val(tags);
+    });
+    $('.tags-sunmit').click(function () {
+        var textarea = $(this).parents('.tags-content').find('textarea').val();
+        var tagsNew = textarea.split(/,|;|\|/);
+        var tagsBox = $('.tags-box');
+        var tags = tagsBox.find('span').parent();
+        tags.remove();
+        for (let i = tagsNew.length-1; i >=0; i--) {
+            var tag = tagsNew[i].replace(/(^\s*)|(\s*$)/g, "")
+            console.log(tag);
+            if (tag != '') {
+                tagsBox.prepend('<div class="kt-margin-r-5 kt-margin-t-5"><span class="btn btn-secondary kt-padding-l-10 kt-padding-r-10 kt-padding-t-5 kt-padding-b-5">' + tagsNew[i].replace(/(^\s*)|(\s*$)/g, "") + '</span></div>');
+            }             
+        }
+        $(this).parent().parent().hide();
+        $(this).parent().parent().siblings().show();
+    });
+</script>
+
+        

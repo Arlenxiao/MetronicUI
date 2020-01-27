@@ -1,0 +1,37 @@
+﻿@{
+    var msg = ViewBag.StatusMessage as String;
+}
+@if (!msg.IsNullOrEmpty())
+{
+    var err = msg.Contains("失败");
+    //if (ViewData.ModelState.Values.Any(st => st.Errors.Count > 0))
+    if (ViewBag.RowsAffected <= 0 || err)
+    {
+        <div class="alert alert-warning fade show" role="alert">
+            <div class="alert-icon"><i class="flaticon-speech-bubble"></i></div>
+            <div class="alert-text">
+                <strong>@msg</strong>
+            </div>
+            <div class="alert-close">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true"><i class="la la-close"></i></span>
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-success fade show" role="alert">
+            <div class="alert-icon"><i class="flaticon-speech-bubble"></i></div>
+            <div class="alert-text">
+                <strong>@msg</strong>
+            </div>
+            <div class="alert-close">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true"><i class="la la-close"></i></span>
+                </button>
+            </div>
+        </div>
+    }
+}
+

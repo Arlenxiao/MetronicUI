@@ -1,0 +1,25 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <script src="~/assets/vendors/general/jquery/dist/jquery.js" type="text/javascript"></script>
+    <script src="~/assets/print/jQuery.print.min.js"></script>
+</head>
+<body>
+    <div id="print_content" style="padding-left:25px;padding-right:25px;">
+        @RenderBody()
+    </div>
+    <script>
+        $(function () {
+            $('#print_content').print();
+        });
+    </script>
+</body>
+</html>

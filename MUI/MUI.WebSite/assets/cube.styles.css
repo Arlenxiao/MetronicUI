@@ -1,0 +1,11 @@
+@media (max-width: 768px) {
+    .cube-header {
+        padding-top: 50px;
+    }
+}
+
+@media (min-width: 769px) {
+    .cube-header {
+        padding-top: 65px;
+    }
+}

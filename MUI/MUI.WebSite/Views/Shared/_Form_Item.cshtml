@@ -1,0 +1,33 @@
+﻿@using NewLife;
+@using XCode;
+@using XCode.Configuration;
+
+@{
+    var pair = Model as Pair;
+    var entity = pair.First as IEntity;
+    var item = pair.Second as FieldItem;
+
+    var err = 0;
+    ModelState st = null;
+    if (ViewData.ModelState.TryGetValue(item.Name, out st) && st != null) { err = st.Errors.Count; }
+    var des = item.Description.TrimStart(item.DisplayName).TrimStart(",", ".", "，", "。");
+}
+
+
+
+<label class="col-3 col-form-label">
+    @item.DisplayName
+    @if (!des.IsNullOrEmpty())
+    {
+        var ds = item.Description.Split("。");
+        <i class="la la-question-circle" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="@(ds.Length>1?ds[1]:"")"></i>
+    }
+</label>
+<div class="col-9">
+    <div class="input-group">
+        @Html.ForEditorX(item, entity, new { @class = "form-control" }.ToDictionary())
+
+
+    </div>
+
+</div>
